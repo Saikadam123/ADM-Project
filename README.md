@@ -109,7 +109,7 @@ Text embedding ──┘
 
 ### Robustness Training
 
-The final model includes several methods designed to reduce excessive dependence on one modality.
+The final model includes several methods to reduce excessive dependence on one modality.
 
 #### 1. Modality Dropout
 

@@ -62,7 +62,7 @@ The binary target is defined as:
 
 ---
 
-## Final Multimodal Architecture
+## Multimodal Architecture
 
 ### Image Branch
 

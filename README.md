@@ -36,6 +36,7 @@ ADM-Project/
 ├── Baseline_Model.ipynb
 ├── CBP_Multimodal_Baseline_Optimized.ipynb
 ├── CBP_Multimodal_Robustness_Model_With_Explainability.ipynb
+├── CBP_Multimodal_With_Augmented_Training_And_Explainability.ipynb
 ├── IO_Model.ipynb
 └── README.md
 ```
@@ -59,6 +60,9 @@ The binary target is defined as:
 
 - `0` = No Finding
 - `1` = Any Finding
+
+The original validation and test sets are kept unchanged throughout model selection and final evaluation.
+Augmentation and class rebalancing are applied only to the training data. The original image files and dataset CSV files are not modified.
 
 ---
 
@@ -130,9 +134,20 @@ Two missing modality strategies are evaluated:
 - Zero substitution
 - Calibrated latent substitution
 
+#### Training Augmentation and Rebalancing
+A second robustness experiment introduces training only augmentation and abnormal class rebalancing.
+Abnormal samples are oversampled during training, while validation and test distributions remain unchanged.
+
+Training images receive controlled transformations such as:
+- Small rotations
+- Translation and scaling
+- Brightness/contrast variation
+- Mild blur and spatial perturbation
+Repeated abnormal examples also receive additional text regularization to reduce report memorization and encourage visual learning.
+
 ---
 
-## Final Test Performance
+## Robustness Model Performance
 
 The final robust trained model was evaluated on the held-out test set using a validation selected threshold.
 
@@ -155,6 +170,22 @@ The final model was also evaluated when one modality was unavailable. Two substi
 
 Calibrated substitution substantially improves text-only threshold based performance and increases image-only accuracy and precision, while AUROC remains similar to the corresponding zero-substitution setting.
 
+## Augmented Training Robustness Model
+
+The augmented/rebalanced model uses the same DenseNet121 + BioClinicalBERT + residual CBP architecture and robustness framework, but introduces training-only class rebalancing and stochastic augmentation.
+
+The validation-selected operating threshold for this model is:
+
+Threshold = 0.405
+
+Validation multimodal performance:
+
+| Condition | Accuracy | Precision | Recall | F1 Score | MCC | AUROC |
+|---|---:|---:|---:|---:|---:|---:|
+| Multimodal | 0.9188 | 0.7643 | 0.9469 | 0.8459 | 0.7999 | 0.9749 |
+| Text Only | 0.4500 | 0.2997 | 1.0000 | 0.4612 | 0.2900 | 0.9564 |
+| Image Only | 0.7063 | 0.4333 | 0.8053 | 0.5635 | 0.4114 | 0.8443 |
+
 ---
 
 ## Explainability
@@ -176,15 +207,15 @@ The explainability evaluation was performed on the complete 480 sample held-out 
 
 | Metric | Mean | SD | Median |
 |---|---:|---:|---:|
-| Text Deletion AUC | 0.6008 | 0.1147 | 0.6032 |
-| Text Insertion AUC | 0.6471 | 0.1009 | 0.6550 |
-| Image Deletion AUC | 0.6215 | 0.0787 | 0.6306 |
-| Image Insertion AUC | 0.6686 | 0.0833 | 0.6743 |
-| Joint Deletion AUC | 0.5330 | 0.0837 | 0.5427 |
-| Joint Insertion AUC | 0.6197 | 0.0762 | 0.6234 |
-| Joint Top-20% Confidence Drop | 0.1903 | 0.0996 | 0.1797 |
-| Image Modality Importance | 0.1916 | 0.0998 | 0.1955 |
-| Text Modality Importance | 0.0848 | 0.1076 | 0.0748 |
+| Text Deletion AUC | 0.2807 | 0.2745 | 0.1212 |
+| Text Insertion AUC | 0.4486 | 0.2971 | 0.3193 |
+| Image Deletion AUC | 0.5625 | 0.1105 | 0.5539 |
+| Image Insertion AUC | 0.6743 | 0.1011 | 0.6785 |
+| Joint Deletion AUC | 0.2905 | 0.2677 | 0.1352 |
+| Joint Insertion AUC | 0.4919 | 0.2879 | 0.3916 |
+| Joint Top-20% Confidence Drop | 0.4761 | 0.3453 | 0.6314 |
+| Image Modality Importance | 0.1506 | 0.1086 | 0.1647 |
+| Text Modality Importance | 0.0830 | 0.1219 | 0.0893 |
 
 Lower deletion AUC indicates stronger deletion faithfulness, while higher insertion AUC indicates stronger insertion faithfulness.
 Positive modality importance indicates that removing that modality reduces confidence in the explained class.

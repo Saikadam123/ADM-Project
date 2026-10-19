@@ -172,9 +172,9 @@ Calibrated substitution substantially improves text-only threshold based perform
 
 ## Augmented Training Robustness Model
 
-The augmented/rebalanced model uses the same DenseNet121 + BioClinicalBERT + residual CBP architecture and robustness framework, but introduces training-only class rebalancing and stochastic augmentation.
+The augmented/rebalanced model uses the same DenseNet121 + BioClinicalBERT + residual CBP architecture and robustness framework, but introduces training only class rebalancing and stochastic augmentation.
 
-The validation-selected operating threshold for this model is:
+The validation selected operating threshold for this model is:
 
 Threshold = 0.405
 
